@@ -62,7 +62,7 @@ class MitreAttackPatternForeignDataWrapper(ForeignDataWrapper):
         collection = Collection("https://cti-taxii.mitre.org/stix/collections/95ecc380-afe9-11e4-9b6c-751b66dd541e/")
         tc_source = TAXIICollectionSource(collection)
 
-        conn_string =
+        conn_string = _conn_string
         query = "SELECT id,name FROM mitre_intrusion_set"
 
         try:
@@ -166,7 +166,7 @@ class ThreatMinerForeignDataWrapper(ForeignDataWrapper):
                                 elif (column_name == 'name'):
                                     line[column_name] = intrusion_set_name
                                 elif (column_name == 'dtime'):
-                                    line[column_name] = reports_result['year']
+                                    line[column_name] = reports_result['year']+"-12-31 00:00:00"
                                 elif (column_name == 'filename'):
                                     line[column_name] = file_name
                                 elif (column_name == 'domain_list'):
