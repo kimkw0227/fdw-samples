@@ -6,6 +6,7 @@ from stix2 import TAXIICollectionSource,Filter
 from stix2.utils import get_type_from_id
 from taxii2client import Collection
 
+_conn_string = "host=127.0.0.1 port=5555 dbname=ctias user=ctias password=citas"
 
 class MitreTaxiiForeignDataWrapper(ForeignDataWrapper):
    def get_intrusion_set(self,src):
@@ -59,7 +60,7 @@ class MitreAttackPatternForeignDataWrapper(ForeignDataWrapper):
       collection = Collection("https://cti-taxii.mitre.org/stix/collections/95ecc380-afe9-11e4-9b6c-751b66dd541e/")
       tc_source = TAXIICollectionSource(collection)
          
-      conn_string = "host=127.0.0.1 port=5555 dbname=ctias user=ctias password=citas"
+      conn_string =
       query = "SELECT id,name FROM mitre_intrusion_set"
 
       try:
@@ -120,7 +121,7 @@ class ThreatMinerForeignDataWrapper(ForeignDataWrapper):
 
    def execute(self, quals, columns):
       intrusion_set_list = []
-      conn_string = "host=127.0.0.1 port=5555 dbname=ctias user=ctias password=citas"
+      conn_string = _conn_string
       query = "SELECT id,name FROM mitre_intrusion_set"
       reports_api = "https://api.threatminer.org/v2/reports.php"      
       report_api = "https://api.threatminer.org/v2/report.php"
@@ -175,14 +176,14 @@ class ThreatMinerForeignDataWrapper(ForeignDataWrapper):
          cur.close()
          conn.close()
 
-class ThreatCrowdForeignDataWrapper(ForeignDataWrapper):
+class ThreatCrowdHashForeignDataWrapper(ForeignDataWrapper):
    def __init__(self, options, columns):
-      super(ThreatCrowdForeignDataWrapper, self).__init__(options,columns)
+      super(ThreatCrowdHashForeignDataWrapper, self).__init__(options,columns)
       self.columns = columns
 
    def execute(self, quals, columns):
       intrusion_set_list = []
-      conn_string = "host=127.0.0.1 port=5555 dbname=ctias user=ctias password=citas"
+      conn_string = _conn_string
       query = "SELECT unnest(hash_list) FROM threat_miner_indicator"
       report_api = "http://www.threatcrowd.org/searchApi/v2/file/report"      
       try:
@@ -213,6 +214,130 @@ class ThreatCrowdForeignDataWrapper(ForeignDataWrapper):
                         line[column_name] = reports['ips']
                      elif (column_name == 'exploit_domain'):
                         line[column_name] = reports['domains']
+
+                  yield line
+      except Exception, e:
+         log_to_postgres(e)
+      finally:
+         cur.close()
+         conn.close()
+
+
+class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
+   def __init__(self, options, columns):
+      super(ThreatCrowdIpForeignDataWrapper, self).__init__(options, columns)
+      self.columns = columns
+
+   def execute(self, quals, columns):
+      intrusion_set_list = []
+      conn_string = _conn_string
+      query = "SELECT unnest(ip_list) FROM threat_miner_indicator"
+      report_api = "http://www.threatcrowd.org/searchApi/v2/ip/report"
+      try:
+         conn = ag.connect(conn_string)
+         cur = conn.cursor()
+
+         cur.execute(query)
+         while True:
+            records = cur.fetchall()
+            if not records:
+               break
+
+            for i in range(0, len(records)):
+               line = dict()
+               # intrusion_set_id = records[i][0]
+               # intrusion_set_name = records[i][1]
+               indicator_ip = records[i][0]
+               reports = json.loads(requests.get(report_api, {"ip": indicator_ip}).text)
+               if (reports['response_code'] == '1'):
+                  for column_name in self.columns:
+                     if (column_name == 'resolutions'):
+                        line[column_name] = reports[column_name]
+                     elif (column_name == 'hashes'):
+                        line[column_name] = reports[column_name]
+                  yield line
+      except Exception, e:
+         log_to_postgres(e)
+      finally:
+         cur.close()
+         conn.close()
+
+
+class ThreatCrowdDomainForeignDataWrapper(ForeignDataWrapper):
+   def __init__(self, options, columns):
+      super(ThreatCrowdDomainForeignDataWrapper, self).__init__(options, columns)
+      self.columns = columns
+
+   def execute(self, quals, columns):
+      intrusion_set_list = []
+      conn_string = _conn_string
+      query = "SELECT unnest(domain_list) FROM threat_miner_indicator"
+      report_api = "http://www.threatcrowd.org/searchApi/v2/domain/report"
+      try:
+         conn = ag.connect(conn_string)
+         cur = conn.cursor()
+
+         cur.execute(query)
+         while True:
+            records = cur.fetchall()
+            if not records:
+               break
+
+            for i in range(0, len(records)):
+               line = dict()
+               # intrusion_set_id = records[i][0]
+               # intrusion_set_name = records[i][1]
+               indicator_domain = records[i][0]
+               reports = json.loads(requests.get(report_api, {"domain": indicator_domain}).text)
+               if (reports['response_code'] == '1'):
+                  for column_name in self.columns:
+                     if (column_name == 'resolutions'):
+                        line[column_name] = reports[column_name]
+                     elif (column_name == 'hashes'):
+                        line[column_name] = reports[column_name]
+                     elif (column_name == 'emails'):
+                        line[column_name] = reports[column_name]
+                     elif (column_name == 'subdomains'):
+                        line[column_name] = reports[column_name]
+
+                  yield line
+      except Exception, e:
+         log_to_postgres(e)
+      finally:
+         cur.close()
+         conn.close()
+
+
+class ThreatCrowdEmailForeignDataWrapper(ForeignDataWrapper):
+   def __init__(self, options, columns):
+      super(ThreatCrowdEmailForeignDataWrapper, self).__init__(options, columns)
+      self.columns = columns
+
+   def execute(self, quals, columns):
+      intrusion_set_list = []
+      conn_string = _conn_string
+      query = "SELECT unnest(email_list) FROM threat_miner_indicator"
+      report_api = "http://www.threatcrowd.org/searchApi/v2/email/report"
+      try:
+         conn = ag.connect(conn_string)
+         cur = conn.cursor()
+
+         cur.execute(query)
+         while True:
+            records = cur.fetchall()
+            if not records:
+               break
+
+            for i in range(0, len(records)):
+               line = dict()
+               # intrusion_set_id = records[i][0]
+               # intrusion_set_name = records[i][1]
+               indicator_email = records[i][0]
+               reports = json.loads(requests.get(report_api, {"email": indicator_email}).text)
+               if (reports['response_code'] == '1'):
+                  for column_name in self.columns:
+                     if (column_name == 'domains'):
+                        line[column_name] = reports[column_name]
 
                   yield line
       except Exception, e:
