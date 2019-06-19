@@ -1,0 +1,6 @@
+setup.py
+ctifdw/__init__.py
+ctifdw.egg-info/PKG-INFO
+ctifdw.egg-info/SOURCES.txt
+ctifdw.egg-info/dependency_links.txt
+ctifdw.egg-info/top_level.txt
