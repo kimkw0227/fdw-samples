@@ -269,8 +269,6 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
 
                     reports = json.loads(requests.get(report_api, {"ip": indicator_ip}).text)
                     if (reports['response_code'] == '1'):
-                        log_to_postgres(reports)
-                        resolutions = json.loads(reports['resolutions'])
                         for column_name in self.columns:
                             if (column_name == 'id'):
                                 line[column_name] = intrusion_set_id
@@ -279,7 +277,7 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
                             elif (column_name == 'dtime'):
                                 line[column_name] = '2999-12-31 00:00:00'
                             elif (column_name == 'resolutions'):
-                                line[column_name] = resolutions
+                                line[column_name] = reports[column_name]
                             elif (column_name == 'hashes'):
                                 line[column_name] = reports[column_name]
                         yield line
