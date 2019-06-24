@@ -279,7 +279,7 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
                             elif (column_name == 'resolutions'):
                                 result_array = list()
                                 log_to_postgres(len(reports[column_name]))
-                                for res_i in len(reports[column_name]):
+                                for res_i in range(0,len(reports[column_name])):
                                     log_to_postgres(reports[column_name]['last_resolved'])
                                     log_to_postgres(reports[column_name][res_i])
                                     tmp = json.loads(reports[column_name][res_i])
