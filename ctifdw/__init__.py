@@ -280,9 +280,10 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
                                 result_array = list()
                                 log_to_postgres(len(reports[column_name]))
                                 for res_i in len(reports[column_name]):
+                                    tmp = json.loads(reports[column_name][res_i])
                                     result = dict()
-                                    result['last_resolved'] = reports[column_name][res_i]['last_resolved']
-                                    result['domain'] = reports[column_name][res_i]['domain']
+                                    result['last_resolved'] = tmp['last_resolved']
+                                    result['domain'] = tmp['domain']
                                     result_array.append(result)
                                     result.clear()
                                 line[column_name] = result_array
