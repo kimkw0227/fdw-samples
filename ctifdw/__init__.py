@@ -278,10 +278,10 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
                                 line[column_name] = '2999-12-31 00:00:00'
                             elif (column_name == 'resolutions'):
                                 result_array = list()
-                                for i in len(reports[column_name]):
+                                for res_i in len(reports[column_name]):
                                     result = dict()
-                                    result['last_resolved'] = reports[column_name][i]['last_resolved']
-                                    result['domain'] = reports[column_name][i]['domain']
+                                    result['last_resolved'] = reports[column_name][res_i]['last_resolved']
+                                    result['domain'] = reports[column_name][res_i]['domain']
                                     result_array.append(result)
                                     result.clear()
                                 line[column_name] = result_array
