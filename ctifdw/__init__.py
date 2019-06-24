@@ -285,6 +285,7 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
                                     result_array.append(reports[column_name][res_i]['domain'])
                                     #json_result['resolutions'] = result_array
                                 #log_to_postgres(json_result)
+                                log_to_postgres(result_array)
                                 line[column_name] = result_array
                             elif (column_name == 'hashes'):
                                 line[column_name] = reports[column_name]
