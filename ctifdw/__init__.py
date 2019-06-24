@@ -6,7 +6,7 @@ from stix2 import TAXIICollectionSource, Filter
 from stix2.utils import get_type_from_id
 from taxii2client import Collection
 
-_conn_string = "host=127.0.0.1 port=5555 dbname=ctias user=ctias password=citas"
+_conn_string = "host=127.0.0.1 port=5432 dbname=ctias user=bitnine"
 
 
 class MitreTaxiiForeignDataWrapper(ForeignDataWrapper):
@@ -277,7 +277,14 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
                             elif (column_name == 'dtime'):
                                 line[column_name] = '2999-12-31 00:00:00'
                             elif (column_name == 'resolutions'):
-                                line[column_name] = reports[column_name]
+                                result_array = list()
+                                for i in len(reports[column_name]):
+                                    result = dict()
+                                    result['last_resolved'] = reports[column_name][i]['last_resolved']
+                                    result['domain'] = reports[column_name][i]['domain']
+                                    result_array.append(result)
+                                    result.clear()
+                                line[column_name] = result_array
                             elif (column_name == 'hashes'):
                                 line[column_name] = reports[column_name]
                         yield line
