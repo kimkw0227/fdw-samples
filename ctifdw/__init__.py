@@ -330,15 +330,17 @@ class ThreatCrowdDomainForeignDataWrapper(ForeignDataWrapper):
                                 line[column_name] = intrusion_set_name
                             elif (column_name == 'dtime'):
                                 line[column_name] = '2999-12-31 00:00:00'
-                            elif (column_name == 'resolutions'):
-                                line[column_name] = reports[column_name]
-                            elif (column_name == 'hashes'):
-                                line[column_name] = reports[column_name]
-                            elif (column_name == 'emails'):
-                                line[column_name] = reports[column_name]
-                            elif (column_name == 'subdomains'):
-                                line[column_name] = reports[column_name]
-
+                            elif (column_name == 'exploit_ip'):
+                                result_array = list()
+                                for res_i in range(len(reports['resolutions'])):
+                                    result_array.append(reports['resolutions'][res_i]['ip_address'])
+                                line[column_name] = result_array
+                            elif (column_name == 'exploit_hash'):
+                                line[column_name] = reports['hashes']
+                            elif (column_name == 'exploit_email'):
+                                line[column_name] = reports['emails']
+                            elif (column_name == 'exploit_subdomain'):
+                                line[column_name] = reports['subdomains']
                         yield line
         except Exception, e:
             log_to_postgres(e)
@@ -381,9 +383,8 @@ class ThreatCrowdEmailForeignDataWrapper(ForeignDataWrapper):
                                 line[column_name] = intrusion_set_name
                             elif (column_name == 'dtime'):
                                 line[column_name] = '2999-12-31 00:00:00'
-                            elif (column_name == 'domains'):
-                                line[column_name] = reports[column_name]
-
+                            elif (column_name == 'exploit_domain'):
+                                line[column_name] = reports['domains']
                         yield line
         except Exception, e:
             log_to_postgres(e)
