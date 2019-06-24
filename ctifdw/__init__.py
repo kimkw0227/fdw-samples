@@ -268,8 +268,8 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
                     indicator_ip = records[i][0]
 
                     reports = json.loads(requests.get(report_api, {"ip": indicator_ip}).text)
-                    log_to_postgres(reports)
                     if (reports['response_code'] == '1'):
+                        log_to_postgres(reports)
                         for column_name in self.columns:
                             if (column_name == 'id'):
                                 line[column_name] = intrusion_set_id
