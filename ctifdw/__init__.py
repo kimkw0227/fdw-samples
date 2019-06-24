@@ -276,7 +276,7 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
                                 line[column_name] = intrusion_set_name
                             elif (column_name == 'dtime'):
                                 line[column_name] = '2999-12-31 00:00:00'
-                            elif (column_name == 'resolutions'):
+                            elif (column_name == 'exploit_domain'):
                                 result_array = list()
                                 for res_i in range(len(reports[column_name])):
                                     # result = dict()
@@ -285,10 +285,9 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
                                     result_array.append(reports[column_name][res_i]['domain'])
                                     #json_result['resolutions'] = result_array
                                 #log_to_postgres(json_result)
-                                log_to_postgres(result_array)
                                 line[column_name] = result_array
-                            elif (column_name == 'hashes'):
-                                line[column_name] = reports[column_name]
+                            elif (column_name == 'exploit_hash'):
+                                line[column_name] = reports['hashes']
                         yield line
         except Exception, e:
             log_to_postgres(e)
