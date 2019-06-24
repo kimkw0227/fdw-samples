@@ -278,14 +278,10 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
                                 line[column_name] = '2999-12-31 00:00:00'
                             elif (column_name == 'resolutions'):
                                 result_array = list()
-                                log_to_postgres(len(reports[column_name]))
-                                for res_i in range(0,len(reports[column_name])):
-                                    log_to_postgres(reports[column_name]['last_resolved'])
-                                    log_to_postgres(reports[column_name][res_i])
-                                    tmp = json.loads(reports[column_name][res_i])
+                                for res_i in range(len(reports[column_name])):
                                     result = dict()
-                                    result['last_resolved'] = tmp['last_resolved']
-                                    result['domain'] = tmp['domain']
+                                    result['last_resolved'] = reports[column_name][res_i]['last_resolved']
+                                    result['domain'] = reports[column_name][res_i]['domain']
                                     result_array.append(result)
                                     result.clear()
                                 line[column_name] = result_array
