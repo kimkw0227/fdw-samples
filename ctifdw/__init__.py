@@ -283,7 +283,6 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
                                     result['last_resolved'] = reports[column_name][res_i]['last_resolved']
                                     result['domain'] = reports[column_name][res_i]['domain']
                                     result_array.append(result)
-                                    result.clear()
                                 log_to_postgres(result_array)
                                 line[column_name] = result_array
                             elif (column_name == 'hashes'):
