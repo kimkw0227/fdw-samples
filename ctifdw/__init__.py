@@ -443,6 +443,7 @@ class ThreatMinerIpExtraForeignDataWrapper(ForeignDataWrapper):
             cur.close()
             conn.close()
 
+
 class VirusTotalForeignDataWrapper(ForeignDataWrapper):
     def __init__(self, options, columns):
         super(VirusTotalForeignDataWrapper, self).__init__(options, columns)
@@ -451,7 +452,7 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
     def execute(self, quals, columns):
         intrusion_set_list = []
         conn_string = _conn_string
-        query = "MATCH (a:ioc) WHERE a.type='md5_hash' RETURN DISTINCT a.value AS hash_value"
+        query = "MATCH (a:ioc) WHERE a.type=\'md5_hash\' RETURN DISTINCT a.value AS hash_value"
         report_api = "https://www.virustotal.com/ui/files/"
         try:
             conn = ag.connect(conn_string)
@@ -471,7 +472,7 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                     if (reports['data']['attributes']['md5'] == indicator_hash):
                         section_cnt = len(reports['data']['attributes']['sections'])
                         section_entropy = list()
-                        for j in range(0,section_cnt):
+                        for j in range(0, section_cnt):
                             section_entropy.append(reports['data']['attributes']['sections'][j]['entropy'])
 
                         for column_name in self.columns:
