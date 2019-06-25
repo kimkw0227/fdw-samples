@@ -468,8 +468,8 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                     line = dict()
                     indicator_hash = records[i][0]
                     report_api = report_api+indicator_hash
-                    log_to_postgres(report_api)
                     reports = json.loads(requests.get(report_api).text)
+                    log_to_postgres(reports)
                     if (reports['data']['attributes']['md5'] == indicator_hash):
                         section_cnt = len(reports['data']['attributes']['sections'])
                         section_entropy = list()
