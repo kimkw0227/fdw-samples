@@ -489,10 +489,13 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                             elif (column_name == 'sha256'):
                                 line[column_name] = reports['data']['attributes']['sha256']
                             elif (column_name == 'imphash'):
-                                if 'imphash' not in reports['data']['attributes']['pe_info']:
+                                if 'pe_info' not in reports['data']['attributes']:
                                     line[column_name] = None
                                 else:
-                                    line[column_name] = reports['data']['attributes']['pe_info']['imphash']
+                                    if 'imphash' not in reports['data']['attributes']['pe_info']:
+                                        line[column_name] = None
+                                    else:
+                                        line[column_name] = reports['data']['attributes']['pe_info']['imphash']
                             elif (column_name == 'ssdeep'):
                                 if 'ssdeep' not in reports['data']['attributes']:
                                     line[column_name] = None
