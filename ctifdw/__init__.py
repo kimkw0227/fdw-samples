@@ -490,14 +490,14 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                             elif (column_name == 'first_submission'):
                                 line[column_name] = time.strftime('%Y-%m-%d %H:%M:%S',
                                                                   time.gmtime(reports['data']['attributes']
-                                                                              ['first_submission_date']/1000.))
+                                                                              ['first_submission_date']))
                             elif (column_name == 'last_modified'):
                                 if 'last_modification_data' not in reports['data']['attributes']:
                                     line[column_name] = None
                                 else:
                                     line[column_name] = time.strftime('%Y-%m-%d %H:%M:%S',
                                                                       time.gmtime(reports['data']['attributes']
-                                                                              ['last_modification_date']/1000.))
+                                                                              ['last_modification_date']))
                             elif (column_name == 'filename'):
                                 if 'meaningful_name' not in reports['data']['attributes']:
                                     line[column_name] = None
