@@ -408,7 +408,7 @@ class ThreatMinerIpExtraForeignDataWrapper(ForeignDataWrapper):
     def execute(self, quals, columns):
         intrusion_set_list = []
         conn_string = _conn_string
-        query = "MATCH (a:ioc) WHERE a.type='ip' RETURN DISTINCT a.value AS ip_value"
+        query = "SET graph_path to ctias3;MATCH (a:ioc) WHERE a.type='ip' RETURN DISTINCT a.value AS ip_value"
         report_api = "http://api.threatminer.org/v2/host.php"
         try:
             conn = ag.connect(conn_string)
@@ -452,7 +452,7 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
     def execute(self, quals, columns):
         intrusion_set_list = []
         conn_string = _conn_string
-        query = "MATCH (a:ioc) WHERE a.type=\'md5_hash\' RETURN DISTINCT a.value AS hash_value"
+        query = "SET graph_path to ctias3;MATCH (a:ioc) WHERE a.type=\'md5_hash\' RETURN DISTINCT a.value AS hash_value"
         report_api = "https://www.virustotal.com/ui/files/"
         try:
             conn = ag.connect(conn_string)
