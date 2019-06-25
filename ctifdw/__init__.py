@@ -500,7 +500,7 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                                                                               ['last_modification_date']/1000.))
                             elif (column_name == 'filename'):
                                 if 'meaningful_name' not in reports['data']['attributes']:
-                                    line[column_name]  = reports['data']['attributes']['names'][0]
+                                    line[column_name] = None
                                 else:
                                     line[column_name] = reports['data']['attributes']['meaningful_name']
                             elif (column_name == 'filesize'):
