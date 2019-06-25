@@ -494,7 +494,7 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                             elif (column_name == 'last_modified'):
                                 line[column_name] = time.strftime('%m/%d/%Y %H:%M:%S',
                                                                   time.gmtime(reports['data']['attributes']
-                                                                              ['last_modification_date'] / 1000.))
+                                                                            ['last_modification_date']/1000.))
                             elif (column_name == 'filename'):
                                 line[column_name] = reports['data']['attributes']['meaningful_name']
                             elif (column_name == 'filesize'):
