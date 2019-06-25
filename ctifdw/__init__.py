@@ -470,11 +470,16 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                     request_url = report_api+indicator_hash
                     reports = json.loads(requests.get(request_url).text)
                     if 'data' in reports:
-                        section_cnt = len(reports['data']['attributes']['pe_info']['sections'])
                         section_entropy = list()
-                        for j in range(0, section_cnt):
-                            section_entropy.\
-                                append(reports['data']['attributes']['pe_info']['sections'][j]['entropy'])
+                        if 'pe_info' not in reports['data']['attributes']:
+                            section_cnt = 0
+                            section_entropy = None
+                        else:
+                            section_cnt = len(reports['data']['attributes']['pe_info']['sections'])
+
+                            for j in range(0, section_cnt):
+                                section_entropy.\
+                                    append(reports['data']['attributes']['pe_info']['sections'][j]['entropy'])
 
                         for column_name in self.columns:
                             if (column_name == 'md5'):
