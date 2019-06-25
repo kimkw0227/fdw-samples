@@ -469,7 +469,7 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                     indicator_hash = records[i][0]
                     report_api = report_api+indicator_hash
                     reports = json.loads(requests.get(report_api).text)
-                    if (reports['data']['attributes']['md5'] == indicator_hash):
+                    if 'data' in reports:
                         section_cnt = len(reports['data']['attributes']['pe_info']['sections'])
                         section_entropy = list()
                         for j in range(0, section_cnt):
