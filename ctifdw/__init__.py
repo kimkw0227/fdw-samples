@@ -391,3 +391,47 @@ class ThreatCrowdEmailForeignDataWrapper(ForeignDataWrapper):
         finally:
             cur.close()
             conn.close()
+
+
+class ThreatMinerIpExtraForeignDataWrapper(ForeignDataWrapper):
+    def __init__(self, options, columns):
+        super(ThreatMinerIpExtraForeignDataWrapper, self).__init__(options, columns)
+        self.columns = columns
+
+    def execute(self, quals, columns):
+        intrusion_set_list = []
+        conn_string = _conn_string
+        query = "MATCH (a:ioc) WHERE a.type='ip' RETURN DISTINCT a.value AS ip_value"
+        report_api = "http://api.threatminer.org/v2/host.php"
+        try:
+            conn = ag.connect(conn_string)
+            cur = conn.cursor()
+
+            cur.execute(query)
+            while True:
+                records = cur.fetchall()
+                if not records:
+                    break
+
+                for i in range(0, len(records)):
+                    line = dict()
+                    indicator_ip = records[i][0]
+                    reports = json.loads(requests.get(report_api, {"q": indicator_ip,"rt": 1}).text)
+                    if (reports['status_code'] == '200'):
+                        for column_name in self.columns:
+                            if (column_name == 'ip'):
+                                line[column_name] = indicator_ip
+                            elif (column_name == 'cc'):
+                                line[column_name] = reports['results'][0]['cc']
+                            elif (column_name == 'asn')
+                                line[column_name] = reports['results'][0]['asn']
+                            elif (column_name == 'org_name'):
+                                line[column_name] = reports['results'][0]['org_name']
+                            elif (column_name == 'register'):
+                                line[column_name] = reports['results'][0]['register']
+                        yield line
+        except Exception, e:
+            log_to_postgres(e)
+        finally:
+            cur.close()
+            conn.close()
