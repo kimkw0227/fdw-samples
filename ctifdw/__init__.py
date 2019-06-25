@@ -445,7 +445,7 @@ class ThreatMinerIpExtraForeignDataWrapper(ForeignDataWrapper):
 
 class VirusTotalForeignDataWrapper(ForeignDataWrapper):
     def __init__(self, options, columns):
-        super(ThreatMinerIpExtraForeignDataWrapper, self).__init__(options, columns)
+        super(VirusTotalForeignDataWrapper, self).__init__(options, columns)
         self.columns = columns
 
     def execute(self, quals, columns):
