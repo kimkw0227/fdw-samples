@@ -408,12 +408,13 @@ class ThreatMinerIpExtraForeignDataWrapper(ForeignDataWrapper):
     def execute(self, quals, columns):
         intrusion_set_list = []
         conn_string = _conn_string
-        query = "SET graph_path to ctias3;MATCH (a:ioc) WHERE a.type='ip' RETURN DISTINCT a.value AS ip_value"
+        set_path = "SET graph_path TO ctias3"
+        query = "MATCH (a:ioc) WHERE a.type='ip' RETURN DISTINCT a.value AS ip_value"
         report_api = "http://api.threatminer.org/v2/host.php"
         try:
             conn = ag.connect(conn_string)
             cur = conn.cursor()
-
+            cur.execute(set_path)
             cur.execute(query)
             while True:
                 records = cur.fetchall()
