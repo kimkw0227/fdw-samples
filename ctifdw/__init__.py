@@ -499,7 +499,10 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                                                                       time.gmtime(reports['data']['attributes']
                                                                               ['last_modification_date']/1000.))
                             elif (column_name == 'filename'):
-                                line[column_name] = reports['data']['attributes']['meaningful_name']
+                                if 'meaningful_name' not in reports['data']['attributes']:
+                                    line[column_name]  = reports['data']['attributes']['names'][0]
+                                else:
+                                    line[column_name] = reports['data']['attributes']['meaningful_name']
                             elif (column_name == 'filesize'):
                                 line[column_name] = reports['data']['attributes']['size']
                             elif (column_name == 'sections'):
