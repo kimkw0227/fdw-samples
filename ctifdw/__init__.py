@@ -491,11 +491,13 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                                 line[column_name] = time.strftime('%Y-%m-%d %H:%M:%S',
                                                                   time.gmtime(reports['data']['attributes']
                                                                               ['first_submission_date']/1000.))
-                            # elif (column_name == 'last_modified'):
-                            #     line[column_name] = time.strftime('%Y-%m-%d %H:%M:%S',
-                            #                                       time.gmtime(reports['data']
-                            #                                                   ['attributes']
-                            #                                                   ['last_modification_date']/1000.))
+                            elif (column_name == 'last_modified'):
+                                if 'last_modification_data' not in reports['data']['attributes']:
+                                    line[column_name] = None
+                                else:
+                                    line[column_name] = time.strftime('%Y-%m-%d %H:%M:%S',
+                                                                      time.gmtime(reports['data']['attributes']
+                                                                              ['last_modification_date']/1000.))
                             elif (column_name == 'filename'):
                                 line[column_name] = reports['data']['attributes']['meaningful_name']
                             elif (column_name == 'filesize'):
@@ -505,7 +507,10 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                             elif (column_name == 'entropy'):
                                 line[column_name] = section_entropy
                             elif (column_name == 'mainlang'):
-                                line[column_name] = reports['data']['attributes']['resource_details'][0]['lang']
+                                if 'resource_details' not in reports['data']['attributes']:
+                                    line[column_name] = None
+                                else:
+                                    line[column_name] = reports['data']['attributes']['resource_details'][0]['lang']
                         yield line
         except Exception, e:
             log_to_postgres(e)
