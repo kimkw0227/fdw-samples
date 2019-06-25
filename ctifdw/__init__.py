@@ -488,13 +488,14 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                             elif (column_name == 'ssdeep'):
                                 line[column_name] = reports['data']['attributes']['ssdeep']
                             elif (column_name == 'first_submission'):
-                                line[column_name] = time.strftime('%m/%d/%Y %H:%M:%S',
+                                line[column_name] = time.strftime('%Y-%m-%d %H:%M:%S',
                                                                   time.gmtime(reports['data']['attributes']
                                                                               ['first_submission_date']/1000.))
                             elif (column_name == 'last_modified'):
-                                line[column_name] = time.strftime('%m/%d/%Y %H:%M:%S',
-                                                                  time.gmtime(reports['data']['attributes']
-                                                                            ['last_modification_date']/1000.))
+                                line[column_name] = time.strftime('%Y-%m-%d %H:%M:%S',
+                                                                  time.gmtime(reports['data']
+                                                                              ['attributes']
+                                                                              ['last_modification_date']/1000.))
                             elif (column_name == 'filename'):
                                 line[column_name] = reports['data']['attributes']['meaningful_name']
                             elif (column_name == 'filesize'):
