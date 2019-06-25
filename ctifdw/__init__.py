@@ -408,7 +408,7 @@ class ThreatMinerIpExtraForeignDataWrapper(ForeignDataWrapper):
     def execute(self, quals, columns):
         intrusion_set_list = []
         conn_string = _conn_string
-        query = "MATCH (a:ioc) WHERE a.type='ip' AND a.value <> '-' RETURN DISTINCT a.value AS ip_value"
+        query = "SELECT a.ip_value FROM (MATCH (a:ioc) WHERE a.type='ip' AND a.value <> '-' RETURN DISTINCT a.value AS ip_value) a"
         report_api = "https://api.threatminer.org/v2/host.php"
         try:
             conn = ag.connect(conn_string)
