@@ -484,9 +484,15 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                             elif (column_name == 'sha256'):
                                 line[column_name] = reports['data']['attributes']['sha256']
                             elif (column_name == 'imphash'):
-                                line[column_name] = reports['data']['attributes']['pe_info']['imphash']
+                                if 'imphash' not in reports['data']['attributes']['pe_info']:
+                                    line[column_name] = None
+                                else:
+                                    line[column_name] = reports['data']['attributes']['pe_info']['imphash']
                             elif (column_name == 'ssdeep'):
-                                line[column_name] = reports['data']['attributes']['ssdeep']
+                                if 'ssdeep' not in reports['data']['attributes']:
+                                    line[column_name] = None
+                                else:
+                                    line[column_name] = reports['data']['attributes']['ssdeep']
                             elif (column_name == 'first_submission'):
                                 line[column_name] = time.strftime('%Y-%m-%d %H:%M:%S',
                                                                   time.gmtime(reports['data']['attributes']
