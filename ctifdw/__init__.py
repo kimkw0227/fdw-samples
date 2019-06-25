@@ -276,6 +276,8 @@ class ThreatCrowdIpForeignDataWrapper(ForeignDataWrapper):
                                 line[column_name] = intrusion_set_name
                             elif (column_name == 'dtime'):
                                 line[column_name] = '2999-12-31 00:00:00'
+                            elif (column_name == 'ip'):
+                                line[column_name] = indicator_ip
                             elif (column_name == 'exploit_domain'):
                                 result_array = list()
                                 for res_i in range(len(reports['resolutions'])):
@@ -330,6 +332,8 @@ class ThreatCrowdDomainForeignDataWrapper(ForeignDataWrapper):
                                 line[column_name] = intrusion_set_name
                             elif (column_name == 'dtime'):
                                 line[column_name] = '2999-12-31 00:00:00'
+                            elif (column_name == 'domain'):
+                                line[column_name] = indicator_domain
                             elif (column_name == 'exploit_ip'):
                                 result_array = list()
                                 for res_i in range(len(reports['resolutions'])):
@@ -383,6 +387,8 @@ class ThreatCrowdEmailForeignDataWrapper(ForeignDataWrapper):
                                 line[column_name] = intrusion_set_name
                             elif (column_name == 'dtime'):
                                 line[column_name] = '2999-12-31 00:00:00'
+                            elif (column_name == 'email'):
+                                line[column_name] = indicator_email
                             elif (column_name == 'exploit_domain'):
                                 line[column_name] = reports['domains']
                         yield line
