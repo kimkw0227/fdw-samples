@@ -429,7 +429,7 @@ class ThreatMinerIpExtraForeignDataWrapper(ForeignDataWrapper):
                                 line[column_name] = indicator_ip
                             elif (column_name == 'cc'):
                                 line[column_name] = reports['results'][0]['cc']
-                            elif (column_name == 'asn')
+                            elif (column_name == 'asn'):
                                 line[column_name] = reports['results'][0]['asn']
                             elif (column_name == 'org_name'):
                                 line[column_name] = reports['results'][0]['org_name']
