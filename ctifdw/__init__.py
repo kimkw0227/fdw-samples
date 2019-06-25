@@ -471,10 +471,10 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                     reports = json.loads(requests.get(report_api).text)
                     log_to_postgres(reports)
                     if (reports['data']['attributes']['md5'] == indicator_hash):
-                        section_cnt = len(reports['data']['attributes']['sections'])
+                        section_cnt = len(reports['data']['attributes']['pe_info']['sections'])
                         section_entropy = list()
                         for j in range(0, section_cnt):
-                            section_entropy.append(reports['data']['attributes']['sections'][j]['entropy'])
+                            section_entropy.append(reports['data']['attributes']['pe_info']['sections'][j]['entropy'])
 
                         for column_name in self.columns:
                             if (column_name == 'md5'):
