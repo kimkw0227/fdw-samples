@@ -408,8 +408,8 @@ class ThreatMinerIpExtraForeignDataWrapper(ForeignDataWrapper):
     def execute(self, quals, columns):
         intrusion_set_list = []
         conn_string = _conn_string
-        query = "MATCH (a:ioc) WHERE a.type=\'ip\' RETURN DISTINCT a.value AS ip_value"
-        report_api = "http://api.threatminer.org/v2/host.php"
+        query = "MATCH (a:ioc) WHERE a.type='ip' AND a.value <> '-' RETURN DISTINCT a.value AS ip_value"
+        report_api = "https://api.threatminer.org/v2/host.php"
         try:
             conn = ag.connect(conn_string)
             cur = conn.cursor()
@@ -423,7 +423,7 @@ class ThreatMinerIpExtraForeignDataWrapper(ForeignDataWrapper):
                 for i in range(0, len(records)):
                     line = dict()
                     indicator_ip = records[i][0]
-                    reports = json.loads(requests.get(report_api, {"q": indicator_ip,"rt": 1}).text)
+                    reports = json.loads(requests.get(report_api, {"q": indicator_ip, "rt": 1}).text)
                     if (reports['status_code'] == '200'):
                         for column_name in self.columns:
                             if (column_name == 'ip'):
