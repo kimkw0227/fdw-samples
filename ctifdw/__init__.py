@@ -485,9 +485,9 @@ class VirusTotalForeignDataWrapper(ForeignDataWrapper):
                             elif (column_name == 'ssdeep'):
                                 line[column_name] = reports['data']['attributes']['ssdeep']
                             elif (column_name == 'first_submission'):
-                                line[column_name] = reports['data']['attribute']['first_submission_date']
+                                line[column_name] = reports['data']['attributes']['first_submission_date']
                             elif (column_name == 'last_modified'):
-                                line[column_name] = reports['data']['attribute']['last_modification_date']
+                                line[column_name] = reports['data']['attributes']['last_modification_date']
                             elif (column_name == 'filename'):
                                 line[column_name] = reports['data']['attributes']['meaningful_name']
                             elif (column_name == 'filesize'):
