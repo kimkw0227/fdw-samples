@@ -441,3 +441,66 @@ class ThreatMinerIpExtraForeignDataWrapper(ForeignDataWrapper):
         finally:
             cur.close()
             conn.close()
+
+class VirusTotalForeignDataWrapper(ForeignDataWrapper):
+    def __init__(self, options, columns):
+        super(ThreatMinerIpExtraForeignDataWrapper, self).__init__(options, columns)
+        self.columns = columns
+
+    def execute(self, quals, columns):
+        intrusion_set_list = []
+        conn_string = _conn_string
+        query = "MATCH (a:ioc) WHERE a.type='md5_hash' RETURN DISTINCT a.value AS hash_value"
+        report_api = "https://www.virustotal.com/ui/files/"
+        try:
+            conn = ag.connect(conn_string)
+            cur = conn.cursor()
+
+            cur.execute(query)
+            while True:
+                records = cur.fetchall()
+                if not records:
+                    break
+
+                for i in range(0, len(records)):
+                    line = dict()
+                    indicator_hash = records[i][0]
+                    report_api = report_api+indicator_hash
+                    reports = json.loads(requests.get(report_api).text)
+                    if (reports['data']['attributes']['md5'] == indicator_hash):
+                        section_cnt = len(reports['data']['attributes']['sections'])
+                        section_entropy = list()
+                        for j in range(0,section_cnt):
+                            section_entropy.append(reports['data']['attributes']['sections'][j]['entropy'])
+
+                        for column_name in self.columns:
+                            if (column_name == 'md5'):
+                                line[column_name] = indicator_hash
+                            elif (column_name == 'sha1'):
+                                line[column_name] = reports['data']['attributes']['sha1']
+                            elif (column_name == 'sha256'):
+                                line[column_name] = reports['data']['attributes']['sha256']
+                            elif (column_name == 'imphash'):
+                                line[column_name] = reports['data']['attributes']['pe_info']['imphash']
+                            elif (column_name == 'ssdeep'):
+                                line[column_name] = reports['data']['attributes']['ssdeep']
+                            elif (column_name == 'first_submission'):
+                                line[column_name] = reports['data']['attribute']['first_submission_date']
+                            elif (column_name == 'last_modified'):
+                                line[column_name] = reports['data']['attribute']['last_modification_date']
+                            elif (column_name == 'filename'):
+                                line[column_name] = reports['data']['attributes']['meaningful_name']
+                            elif (column_name == 'filesize'):
+                                line[column_name] = reports['data']['attributes']['size']
+                            elif (column_name == 'sections'):
+                                line[column_name] = section_cnt
+                            elif (column_name == 'entropy'):
+                                line[column_name] = section_entropy
+                            elif (column_name == 'mainlang'):
+                                line[column_name] = reports['data']['attributes']['resource_details'][0]['lang']
+                        yield line
+        except Exception, e:
+            log_to_postgres(e)
+        finally:
+            cur.close()
+            conn.close()
