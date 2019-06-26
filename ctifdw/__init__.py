@@ -6,6 +6,7 @@ from stix2 import TAXIICollectionSource, Filter
 from stix2.utils import get_type_from_id
 from taxii2client import Collection
 import time
+from ipwhois import IPWhois
 
 _conn_string = "host=127.0.0.1 port=5432 dbname=ctias user=bitnine"
 
@@ -400,9 +401,55 @@ class ThreatCrowdEmailForeignDataWrapper(ForeignDataWrapper):
             conn.close()
 
 
-class ThreatMinerIpExtraForeignDataWrapper(ForeignDataWrapper):
+class IPWhoisForeignDataWrapper(ForeignDataWrapper):
     def __init__(self, options, columns):
-        super(ThreatMinerIpExtraForeignDataWrapper, self).__init__(options, columns)
+        super(IPWhoisForeignDataWrapper, self).__init__(options, columns)
+        self.columns = columns
+
+    def execute(self, quals, columns):
+        intrusion_set_list = []
+        conn_string = _conn_string
+        query = "MATCH (a:ioc) WHERE a.type=\'ip\' AND a.value <> \'-\' AND a.value <> \'\' RETURN DISTINCT a.value AS ip_value"
+
+        try:
+            conn = ag.connect(conn_string)
+            cur = conn.cursor()
+
+            cur.execute(query)
+            while True:
+                records = cur.fetchall()
+                if not records:
+                    break
+
+                for i in range(0, len(records)):
+                    line = dict()
+                    indicator_ip = records[i][0]
+                    obj = IPWhois(indicator_ip)
+                    res = obj.lookup_whois()
+                    for column_name in self.columns:
+                        if (column_name == 'ip'):
+                            line[column_name] = indicator_ip
+                        elif (column_name == 'asn'):
+                            line[column_name] = result['asn']
+                        elif (column_name == 'country_code'):
+                            line[column_name] = result['asn_country_code']
+                        elif (column_name == 'date'):
+                            line[column_name] = result['asn_date']
+                        elif (column_name == 'description'):
+                            line[column_name] = result['asn_description']
+                        elif (column_name == 'registry'):
+                            line[column_name] = result['asn_registry']
+                    yield line
+        except Exception, e:
+            log_to_postgres(e)
+        finally:
+            cur.close()
+            conn.close()
+
+
+class ThreatMinerWhoisForeignDataWrapper(ForeignDataWrapper):
+    def __init__(self, options, columns):
+        super(ThreatMinerWhoisForeignDataWrapper, self).__init__(options, columns)
         self.columns = columns
 
     def execute(self, quals, columns):
