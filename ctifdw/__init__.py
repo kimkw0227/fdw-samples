@@ -425,7 +425,7 @@ class IPWhoisForeignDataWrapper(ForeignDataWrapper):
                     line = dict()
                     indicator_ip = records[i][0]
                     obj = IPWhois(indicator_ip)
-                    res = obj.lookup_rdap()
+                    res = obj.lookup_rdap(asn_methods=['whois','dns'])
                     for column_name in self.columns:
                         if (column_name == 'ip'):
                             line[column_name] = indicator_ip
