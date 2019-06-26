@@ -430,15 +430,15 @@ class IPWhoisForeignDataWrapper(ForeignDataWrapper):
                         if (column_name == 'ip'):
                             line[column_name] = indicator_ip
                         elif (column_name == 'asn'):
-                            line[column_name] = result['asn']
+                            line[column_name] = res['asn']
                         elif (column_name == 'country_code'):
-                            line[column_name] = result['asn_country_code']
+                            line[column_name] = res['asn_country_code']
                         elif (column_name == 'date'):
-                            line[column_name] = result['asn_date']
+                            line[column_name] = res['asn_date']
                         elif (column_name == 'description'):
-                            line[column_name] = result['asn_description']
+                            line[column_name] = res['asn_description']
                         elif (column_name == 'registry'):
-                            line[column_name] = result['asn_registry']
+                            line[column_name] = res['asn_registry']
                     yield line
         except Exception, e:
             log_to_postgres(e)
