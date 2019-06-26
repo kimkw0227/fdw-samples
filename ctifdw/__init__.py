@@ -409,7 +409,8 @@ class IPWhoisForeignDataWrapper(ForeignDataWrapper):
     def execute(self, quals, columns):
         intrusion_set_list = []
         conn_string = _conn_string
-        query = "MATCH (a:ioc) WHERE a.type=\'ip\' AND a.value <> \'-\' AND a.value <> \'\' AND a.value <> \'0.0.0.0\' RETURN DISTINCT a.value AS ip_value"
+        query = "MATCH (a:ioc) WHERE a.type=\'ip\' AND a.value <> \'-\' AND a.value <> \'\' " \
+                "AND a.value <> \'0.0.0.0\' AND a.value <> \'10.10.10.1\' RETURN DISTINCT a.value AS ip_value"
 
         try:
             conn = ag.connect(conn_string)
